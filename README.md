@@ -68,6 +68,13 @@ npm run test
 - Validação de formato de email
 - Token salvo no navegador
 
+## Acesso para Testes
+
+Utilize as credenciais abaixo para testar a aplicação:
+
+- Email: admin@pizzaria.com  
+- Senha: 123456
+
 ### Comportamento
 - Sucesso → redireciona para dashboard
 - Erro → exibe mensagens amigáveis
@@ -118,7 +125,6 @@ Fluxo permitido:
 ## Exclusão de Pedido
 
 - Permitida apenas se o status atual for `recebido`.
-- Exige uma confirmação obrigatória na tela antes de excluir efetivamente.
 
 ---
 
@@ -148,7 +154,6 @@ package.json      # dependências e scripts
 
 ## Evolução futura
 
-- Integração com pagamentos
 - Dashboard com métricas (gráficos)
 - Notificações em tempo real (via WebSocket)
 - Responsividade avançada para uso em dispositivos móveis
@@ -157,4 +162,4 @@ package.json      # dependências e scripts
 
 ## Observação
 
-O frontend segue as regras de negócio rigorosas definidas pela API, garantindo consistência total entre a interface web e as restrições do backend.
+O frontend segue as regras de negócio definidas pela API, garantindo consistência total entre a interface web e as restrições do backend.
