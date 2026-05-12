@@ -1,4 +1,4 @@
-# PizzaFlow Frontend
+# PizzaFlow WEB
 
 Interface web para gerenciamento de pedidos integrada à API PizzaFlow.
 
