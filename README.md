@@ -20,7 +20,9 @@ Fornecer uma interface intuitiva para:
 - **CSS customizado**
 - **Fetch API**
 - **JWT** (autenticação)
+- **Lucide React
 - **Vitest & React Testing Library** (Testes automatizados)
+- **Cypress
 
 ---
 
