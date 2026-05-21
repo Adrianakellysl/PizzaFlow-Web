@@ -1,160 +1,159 @@
 # PizzaFlow Frontend
 
-Interface web para gerenciamento de pedidos integrada à API PizzaFlow.
+Interface web em React para atendimento e acompanhamento de pedidos da API PizzaFlow.
 
-## Objetivo
+## Descricao
 
-Fornecer uma interface intuitiva para:
+O frontend permite login, criacao de pedidos, acompanhamento da fila em Kanban, edicao de pedidos elegiveis, avanco de status, cancelamento/exclusao quando permitido e consulta do historico.
 
-- Criar pedidos
-- Editar pedidos
-- Atualizar status
-- Excluir pedidos
-- Visualizar fluxo em tempo real (Kanban)
-
----
+O sistema consome a API REST configurada em `VITE_API_URL` e usa JWT salvo no `localStorage` para autenticar as rotas protegidas.
 
 ## Tecnologias
 
-- **React + Vite**
-- **CSS customizado**
-- **Fetch API**
-- **JWT** (autenticação)
-- **Vitest & React Testing Library** (Testes automatizados)
+- React
+- Vite
+- CSS customizado
+- Fetch API
+- Lucide React
+- Vitest
+- React Testing Library
+- Cypress
 
----
+## Como Rodar Localmente
 
-## Como Executar o Sistema
+### 1. Pre-requisitos
 
-Para rodar a aplicação localmente, siga o passo a passo abaixo:
+- Node.js instalado
+- Backend PizzaFlow rodando
+- API disponivel em `http://localhost:3000/api` ou em outra URL configurada no `.env`
 
-### 1. Pré-requisitos
-Certifique-se de ter o **Node.js** instalado na sua máquina e o banco de dados **MongoDB** rodando (pois é nele que os dados são salvos de fato). Além disso, a **API do PizzaFlow** (backend) também deve estar configurada e rodando localmente na porta 3000.
+### 2. Instalar dependencias
 
-### 2. Instalação das dependências
-Abra o terminal na pasta do projeto frontend e execute:
 ```bash
 npm install
 ```
 
-### 3. Configuração de Variáveis de Ambiente
-Crie um arquivo chamado `.env` na raiz do projeto (ou copie do `.env.example`). Ele deve conter a URL base da sua API:
+### 3. Configurar ambiente
+
+Crie um arquivo `.env` na raiz do frontend ou copie o `.env.example`.
+
 ```bash
 VITE_API_URL=http://localhost:3000/api
 ```
 
-### 4. Inicialização do Servidor de Desenvolvimento
-Inicie o frontend executando o comando:
+### 4. Rodar em desenvolvimento
+
 ```bash
 npm run dev
 ```
-O terminal mostrará a URL local (geralmente `http://localhost:5173`) onde você poderá acessar a interface pelo navegador.
 
-### 5. Execução de Testes Automatizados (Opcional)
-Como o projeto possui uma suíte de testes de interface focada em qualidade (QA), você pode rodá-la usando:
+Por padrao, o Vite exibira uma URL local como `http://localhost:5173`.
+
+### 5. Rodar testes unitarios
+
 ```bash
-npm run test
+npm test
 ```
 
-> **Nota sobre o Login:**
-> O login se comunica com o endpoint `POST /api/login` e, em caso de sucesso, salva o token JWT no `localStorage` do navegador para manter a sessão ativa durante as requisições subsequentes.
+### 6. Rodar testes E2E
 
----
+Com o frontend rodando:
 
-## Autenticação
+```bash
+npm run test:e2e
+```
 
-### Regras
-- Email e senha obrigatórios
-- Validação de formato de email
-- Token salvo no navegador
+Para abrir a interface do Cypress:
 
-### Comportamento
-- Sucesso → redireciona para dashboard
-- Erro → exibe mensagens amigáveis
+```bash
+npm run test:e2e:open
+```
 
----
+## Integracao com a API
 
-## Proteção de Rotas
+Base URL padrao:
 
-- Rotas protegidas:
-  - `/dashboard`
-  - `/pedidos`
+```text
+http://localhost:3000/api
+```
 
-- Sem token → redireciona automaticamente para o login
+Endpoints consumidos:
 
----
+| Acao | Metodo e rota |
+|---|---|
+| Login | `POST /login` |
+| Listar pedidos | `GET /pedidos` |
+| Criar pedido | `POST /pedidos` |
+| Editar pedido | `PUT /pedidos/:id` |
+| Avancar status | `PATCH /pedidos/:id/status` |
+| Cancelar/excluir pedido | `DELETE /pedidos/:id` |
 
-## Criação de Pedido
+Rotas de pedidos enviam:
 
-### Validações
-- Cliente obrigatório
-- Lista de itens obrigatória
-- Quantidade > 0
+```text
+Authorization: Bearer <token>
+```
 
-### Regras
-- Preço NÃO é enviado para a API (o backend se encarrega de validar os valores reais)
-- O Total calculado no frontend serve apenas para exibição prévia para o usuário
+## Regras de Negocio no Frontend
 
----
+- Login exige email e senha preenchidos.
+- O token JWT retornado pela API e salvo no `localStorage`.
+- Ao receber `401`, o frontend limpa o token e retorna para a tela de login.
+- O frontend envia apenas `cliente` e `itens` ao criar ou editar pedido.
+- O preco exibido no formulario e apenas uma estimativa visual.
+- O backend e a fonte da verdade para precos, validacoes e total final.
+- Pedido so pode ser editado quando estiver com status `recebido`.
+- Cancelamento/exclusao so fica disponivel para pedido com status `recebido`.
+- O Kanban exibe apenas pedidos ativos: `recebido`, `preparando` e `pronto`.
+- O historico exibe pedidos `entregue` e `cancelado`, sem alterar regras de cancelamento.
+- Status seguem o fluxo `recebido -> preparando -> pronto -> entregue`.
 
-## Edição de Pedido
+## Funcionalidades
 
-- Permitida apenas se o status atual for `recebido`.
+- Tela de login.
+- Dashboard Kanban por status ativo.
+- Criacao de pedido com itens e quantidades.
+- Exibicao de total estimado antes do envio.
+- Edicao de pedido recebido.
+- Avanco sequencial de status.
+- Cancelamento/exclusao de pedido recebido.
+- Historico de pedidos entregues e cancelados.
+- Tela de configuracoes com URL da API e resumo dos pedidos carregados.
+- Tratamento visual de erros, loading e sessao expirada.
 
----
-
-## Atualização de Status
-
-Fluxo permitido:
-
-`recebido` → `preparando` → `pronto` → `entregue`
-
-### Regras
-- Não pode pular etapas.
-- Não pode voltar status.
-
----
-
-## Exclusão de Pedido
-
-- Permitida apenas se o status atual for `recebido`.
-- Exige uma confirmação obrigatória na tela antes de excluir efetivamente.
-
----
-
-## Listagem de Pedidos
-
-- Exibição em formato Kanban (colunas separadas e baseadas nos status do pedido).
-- Atualização automática da lista após realizar qualquer ação (criar, excluir ou avançar status).
-
----
-
-## Estrutura do Projeto
+## Estrutura
 
 ```text
 src/
-  api/            # comunicação com a API (fetch/axios)
-  App.jsx         # componente principal
-  main.jsx        # ponto de entrada da aplicação
-  styles.css      # estilos globais
+  api/
+    client.js
+  App.jsx
+  main.jsx
+  styles.css
 
-index.html        # template HTML
-.env.example      # exemplo de variáveis de ambiente
-vite.config.js    # configuração do Vite
-package.json      # dependências e scripts
+test/
+  Dashboard.spec.jsx
+  Historico.spec.jsx
+  Login.spec.jsx
+  NovoPedido.spec.jsx
+  setup.js
+
+cypress/
+  e2e/
+  support/
+
+index.html
+vite.config.js
+cypress.config.js
+package.json
+.env.example
 ```
 
----
+## Checklist de Producao
 
-## Evolução futura
-
-- Integração com pagamentos
-- Dashboard com métricas (gráficos)
-- Notificações em tempo real (via WebSocket)
-- Responsividade avançada para uso em dispositivos móveis
-
----
-
-## Observação
-
-O frontend segue as regras de negócio rigorosas definidas pela API, garantindo consistência total entre a interface web e as restrições do backend.
+- Configurar `VITE_API_URL` para a URL real da API.
+- Rodar `npm test`.
+- Rodar `npm run build`.
+- Publicar o conteudo gerado em `dist/`.
+- Garantir que a API aceite CORS para o dominio do frontend.
+- Servir a aplicacao com HTTPS em ambiente publico.

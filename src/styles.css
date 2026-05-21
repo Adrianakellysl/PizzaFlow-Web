@@ -1,13 +1,13 @@
 :root {
-  --aubergine: #574964;
-  --mauve: #9f8383;
-  --rose: #c8aaaa;
-  --cream: #ffdab3;
+  --aubergine: #1F2937;
+  --mauve: #948979;
+  --rose: #F77F00;
+  --cream: #FCBF49;
   --ink: #282230;
-  --muted: #756a7b;
-  --surface: #D2C4B4;
+  --muted: #2e4442;
+  --surface: #e2d7c1;
   --white: #ffffff;
-  --danger: #b64b4b;
+  --danger: #D62828;
   --success: #357960;
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -23,8 +23,8 @@ body {
   min-height: 100vh;
   color: var(--ink);
   background:
-    radial-gradient(circle at top left, rgba(255, 218, 179, 0.55), transparent 30rem),
-    linear-gradient(135deg, #fff7ef 0%, #f4edf2 100%);
+  radial-gradient(circle at top left, rgba(11, 9, 56, 0.15), transparent 30rem),
+  linear-gradient(135deg, #dddedf 0%, #EEF2FF 100%);
 }
 
 button,
@@ -115,6 +115,16 @@ select:focus {
   box-shadow: 0 0 0 4px rgba(87, 73, 100, 0.1);
 }
 
+.input-error {
+  border-color: var(--danger);
+}
+
+.field-error {
+  margin-top: -4px;
+  color: var(--danger);
+  font-size: 0.82rem;
+}
+
 .primary-button,
 .ghost-button,
 .small-button,
@@ -139,7 +149,7 @@ select:focus {
 
 .ghost-button {
   color: var(--aubergine);
-  background: rgba(255, 218, 179, 0.58);
+  background: rgba(233, 220, 104, 0.5);
   padding: 0 14px;
 }
 
@@ -197,10 +207,26 @@ select:focus {
   background: rgba(53, 121, 96, 0.12);
 }
 
+.center-alert {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 30px;
+}
+
+.center-alert > div {
+  font-size: 1.2rem;
+}
+
+.white-action {
+  background: var(--white);
+}
+
 .app-shell {
   min-height: 100vh;
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: 250px minmax(0, 1fr);
 }
 
 .sidebar {
@@ -297,7 +323,6 @@ select:focus {
   grid-template-columns: repeat(4, minmax(220px, 1fr));
   gap: 16px;
   align-items: start;
-  overflow-x: auto;
   padding-bottom: 4px;
 }
 
@@ -330,10 +355,11 @@ select:focus {
 }
 
 .active-kanban {
-  grid-template-columns: repeat(3, minmax(240px, 1fr));
+   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 }
 
 .kanban-column {
+  min-width: 0;
   max-height: 370px;
   overflow-y: auto;
   padding: 14px;
@@ -370,6 +396,7 @@ select:focus {
   border-radius: 8px;
   background: var(--white);
   box-shadow: 0 12px 28px rgba(87, 73, 100, 0.08);
+  box-sizing: border-box;
 }
 
 .pedido-card:hover {
@@ -412,6 +439,12 @@ select:focus {
   font-weight: 700;
 }
 
+.inline-success {
+  margin-bottom: 10px;
+  padding: 9px 10px;
+  font-size: 0.82rem;
+}
+
 .empty-state {
   padding: 16px;
   border-radius: 8px;
@@ -429,7 +462,7 @@ select:focus {
 
 .order-layout {
   display: grid;
-  grid-template-columns: minmax(0, 760px) minmax(260px, 340px);
+  grid-template-columns: 1fr 320px;
   gap: 18px;
   align-items: start;
 }
@@ -471,7 +504,7 @@ select:focus {
   gap: 12px;
   padding: 14px;
   border-radius: 8px;
-  background: rgba(255, 218, 179, 0.5);
+  background: rgba(233, 220, 104, 0.5);
 }
 
 .form-total span {
@@ -532,7 +565,7 @@ select:focus {
 
 .history-row {
   display: grid;
-  grid-template-columns: 1.1fr 2fr 0.8fr 1fr;
+  grid-template-columns: 1.1fr 2fr 0.8fr 1fr 0.8fr;
   gap: 16px;
   align-items: center;
   padding: 14px 16px;
@@ -549,12 +582,43 @@ select:focus {
 
 .history-head {
   color: var(--aubergine);
-  background: rgba(255, 218, 179, 0.42);
+  background: rgba(233, 220, 104, 0.5);
   font-weight: 900;
 }
 
 .history-row span {
   color: var(--muted);
+}
+
+.history-empty {
+  padding: 30px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.load-more-row {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.status-badge.entregue {
+  color: var(--success);
+  background: rgba(53, 121, 96, 0.12);
+}
+
+.status-badge.cancelado {
+  color: var(--danger);
+  background: rgba(182, 75, 75, 0.1);
 }
 
 .settings-grid {
@@ -587,8 +651,29 @@ select:focus {
   max-height: min(92vh, 860px);
   overflow: auto;
   border-radius: 8px;
-  background: var(--surface);
+  background: #F1EFEC;
   box-shadow: 0 28px 90px rgba(40, 34, 48, 0.34);
+}
+
+.success-modal {
+  width: min(100%, 400px);
+  padding: 30px;
+  text-align: center;
+}
+
+.success-modal h2 {
+  color: var(--success);
+}
+
+.success-modal p {
+  margin-bottom: 24px;
+  color: var(--muted);
+}
+
+.success-modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
 
 .modal-heading {

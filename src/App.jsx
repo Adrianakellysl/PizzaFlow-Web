@@ -31,12 +31,14 @@ const CARDAPIO = [
 
 const STATUS_FLOW = ['recebido', 'preparando', 'pronto', 'entregue'];
 const STATUS_ATIVOS = ['recebido', 'preparando', 'pronto'];
+const STATUS_HISTORICO = ['entregue', 'cancelado'];
 
 const STATUS_LABELS = {
   recebido: 'Recebido',
   preparando: 'Preparando',
   pronto: 'Pronto',
-  entregue: 'Entregue'
+  entregue: 'Entregue',
+  cancelado: 'Cancelado'
 };
 
 function getPedidoId(pedido) {
@@ -77,6 +79,11 @@ function formatDateTime(value) {
     hour: '2-digit',
     minute: '2-digit'
   });
+}
+
+function getDateTimeValue(pedido) {
+  const date = new Date(getPedidoCreatedAt(pedido));
+  return Number.isNaN(date.getTime()) ? 0 : date.getTime();
 }
 
 function getPrecoPizza(nome) {
@@ -136,7 +143,7 @@ export function Login({ onLogin, message }) {
     setSenhaError('');
 
     const credentials = {
-      email: email.trim(),
+      email: email.trim().toLowerCase(),
       senha: senha.trim()
     };
 
@@ -175,7 +182,7 @@ export function Login({ onLogin, message }) {
           <ChefHat size={34} />
         </div>
         <h1>PizzaFlow</h1>
-        <p>Atendimento rapido para pedidos quentinhos, status claros e cozinha em movimento.</p>
+        <p>Mais eficiência para servir melhor.</p>
 
         <form onSubmit={handleSubmit} className="login-form" noValidate>
           <label>
@@ -185,9 +192,9 @@ export function Login({ onLogin, message }) {
               value={email}
               onChange={(event) => { setEmail(event.target.value); setEmailError(''); }}
               placeholder="admin@pizzaria.com"
-              style={emailError ? { borderColor: 'var(--danger)' } : {}}
+              className={emailError ? 'input-error' : ''}
             />
-            {emailError && <span style={{ color: 'var(--danger)', fontSize: '0.82rem', marginTop: '-4px' }}>{emailError}</span>}
+            {emailError && <span className="field-error">{emailError}</span>}
           </label>
           <label>
             Senha
@@ -197,9 +204,9 @@ export function Login({ onLogin, message }) {
               value={senha}
               onChange={(event) => { setSenha(event.target.value); setSenhaError(''); }}
               placeholder="Digite sua senha"
-              style={senhaError ? { borderColor: 'var(--danger)' } : {}}
+              className={senhaError ? 'input-error' : ''}
             />
-            {senhaError && <span style={{ color: 'var(--danger)', fontSize: '0.82rem', marginTop: '-4px' }}>{senhaError}</span>}
+            {senhaError && <span className="field-error">{senhaError}</span>}
           </label>
           {(erro || message) && <div className="alert">{erro || message}</div>}
           <button className="primary-button" disabled={loading}>
@@ -320,10 +327,10 @@ export function NovoPedido({ onCreated, onNavigate }) {
     <section className="workspace-section">
       {modalSucesso && (
         <div className="modal-backdrop" role="presentation">
-          <section className="modal-panel" style={{ width: '400px', padding: '30px', textAlign: 'center' }} role="dialog">
-            <h2 style={{ color: 'var(--success)' }}>Pedido Criado com Sucesso!</h2>
-            <p style={{ color: 'var(--muted)', marginBottom: '24px' }}>O pedido foi adicionado a fila e ja esta no Dashboard.</p>
-            <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+          <section className="modal-panel success-modal" role="dialog" aria-modal="true" aria-label="Pedido criado">
+            <h2>Pedido Criado com Sucesso!</h2>
+            <p>O pedido foi adicionado a fila e ja esta no Dashboard.</p>
+            <div className="success-modal-actions">
               <button className="ghost-button" onClick={() => setModalSucesso(false)}>Novo Pedido</button>
               <button className="primary-button" onClick={() => onNavigate('dashboard')}>Ir para Dashboard</button>
             </div>
@@ -554,7 +561,7 @@ function PedidoCard({ pedido, onRefresh }) {
           ))}
         </ul>
         {erro && <div className="inline-error">{erro}</div>}
-        {sucesso && <div className="success" style={{ marginBottom: '10px', fontSize: '0.82rem', padding: '9px 10px' }}>{sucesso}</div>}
+        {sucesso && <div className="success inline-success">{sucesso}</div>}
         <div className="pedido-actions">
           {podeEditar && (
             <button className="edit-button" type="button" onClick={() => setEditando(true)} disabled={loadingAction}>
@@ -604,9 +611,9 @@ export function Dashboard({ pedidos, loading, erro, onRefresh }) {
       </div>
 
       {erro && (
-        <div className="alert" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', padding: '30px' }}>
-          <div style={{ fontSize: '1.2rem' }}>Não foi possível carregar a fila de pedidos.</div>
-          <button className="ghost-button" onClick={onRefresh} style={{ background: 'var(--white)' }}>
+        <div className="alert center-alert">
+          <div>Nao foi possivel carregar a fila de pedidos.</div>
+          <button className="ghost-button white-action" onClick={onRefresh}>
             Tentar Novamente
           </button>
         </div>
@@ -659,21 +666,21 @@ export function Historico({ pedidos, loading, erro, onRefresh }) {
   const [pagina, setPagina] = useState(1);
   const itensPorPagina = 10;
   
-  const entregues = useMemo(() => {
+  const pedidosHistorico = useMemo(() => {
     return pedidos
-      .filter((pedido) => pedido.status === 'entregue' || pedido.status === 'cancelado')
-      .sort((a, b) => new Date(getPedidoCreatedAt(b)) - new Date(getPedidoCreatedAt(a)));
+      .filter((pedido) => STATUS_HISTORICO.includes(pedido.status))
+      .sort((a, b) => getDateTimeValue(b) - getDateTimeValue(a));
   }, [pedidos]);
 
-  const entreguesPaginados = entregues.slice(0, pagina * itensPorPagina);
-  const temMaisItens = entregues.length > entreguesPaginados.length;
+  const pedidosPaginados = pedidosHistorico.slice(0, pagina * itensPorPagina);
+  const temMaisItens = pedidosHistorico.length > pedidosPaginados.length;
 
   return (
     <section className="workspace-section">
       <div className="section-heading">
         <div>
           <span>Historico</span>
-          <h2>Pedidos entregues</h2>
+          <h2>Pedidos finalizados</h2>
         </div>
         <button className="ghost-button" onClick={onRefresh} disabled={loading}>
           <RefreshCw size={18} />
@@ -682,9 +689,9 @@ export function Historico({ pedidos, loading, erro, onRefresh }) {
       </div>
 
       {erro && (
-        <div className="alert" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', padding: '30px' }}>
-          <div style={{ fontSize: '1.2rem' }}>Erro ao carregar o histórico.</div>
-          <button className="ghost-button" onClick={onRefresh} style={{ background: 'var(--white)' }}>
+        <div className="alert center-alert">
+          <div>Erro ao carregar o historico.</div>
+          <button className="ghost-button white-action" onClick={onRefresh}>
             Tentar novamente
           </button>
         </div>
@@ -697,24 +704,28 @@ export function Historico({ pedidos, loading, erro, onRefresh }) {
             <span>Itens</span>
             <span>Total</span>
             <span>Criado em</span>
+            <span>Status</span>
           </div>
-          {loading && entregues.length === 0 && <div className="empty-state">Carregando historico...</div>}
-          {!loading && entregues.length === 0 && (
-             <div className="empty-state" style={{ textAlign: 'center', padding: '30px', color: 'var(--muted)' }}>
-               Nenhum histórico de pedidos registrado até o momento.
+          {loading && pedidosHistorico.length === 0 && <div className="empty-state">Carregando historico...</div>}
+          {!loading && pedidosHistorico.length === 0 && (
+             <div className="empty-state history-empty">
+              Nenhum historico de pedidos registrado ate o momento.
              </div>
           )}
-          {entreguesPaginados.map((pedido) => (
+          {pedidosPaginados.map((pedido) => (
               <div className="history-row" key={getPedidoId(pedido)}>
                 <strong>{pedido.cliente}</strong>
                 <span>{pedido.itens?.map((item) => `${item.quantidade}x ${item.nome}`).join(', ')}</span>
                 <strong>{formatCurrency(pedido.total)}</strong>
                 <span>{formatDateTime(getPedidoCreatedAt(pedido))}</span>
+                <span className={`status-badge ${pedido.status}`}>
+                  {STATUS_LABELS[pedido.status] || pedido.status}
+                </span>
               </div>
           ))}
           {temMaisItens && (
-             <div style={{ display: 'flex', justifyContent: 'center', padding: '16px' }}>
-               <button className="ghost-button" onClick={() => setPagina(p => p + 1)}>
+             <div className="load-more-row">
+               <button className="ghost-button" onClick={() => setPagina((currentPage) => currentPage + 1)}>
                  Carregar mais itens
                </button>
              </div>
@@ -727,7 +738,7 @@ export function Historico({ pedidos, loading, erro, onRefresh }) {
 
 function Configuracoes({ pedidos }) {
   const totalPedidos = pedidos.length;
-  const pedidosAtivos = pedidos.filter((pedido) => pedido.status !== 'entregue').length;
+  const pedidosAtivos = pedidos.filter((pedido) => STATUS_ATIVOS.includes(pedido.status)).length;
 
   return (
     <section className="workspace-section">
