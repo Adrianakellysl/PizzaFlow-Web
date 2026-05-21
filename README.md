@@ -50,10 +50,24 @@ npm run dev
 ```
 O terminal mostrará a URL local (geralmente `http://localhost:5173`) onde você poderá acessar a interface pelo navegador.
 
-### 5. Execução de Testes Automatizados (Opcional)
-Como o projeto possui uma suíte de testes de interface focada em qualidade (QA), você pode rodá-la usando:
+## 5. Rodar testes unitarios
+
 ```bash
-npm run test
+npm test
+```
+
+### 6. Rodar testes E2E
+
+Com o frontend rodando:
+
+```bash
+npm run test:e2e
+```
+
+Para abrir a interface do Cypress:
+
+```bash
+npm run test:e2e:open
 ```
 
 > **Nota sobre o Login:**
@@ -132,6 +146,7 @@ Fluxo permitido:
 
 - Exibição em formato Kanban (colunas separadas e baseadas nos status do pedido).
 - Atualização automática da lista após realizar qualquer ação (criar, excluir ou avançar status).
+- Histórico exibe pedidos com status `cancelado` ou `entregue`.
 
 ---
 
@@ -139,15 +154,28 @@ Fluxo permitido:
 
 ```text
 src/
-  api/            # comunicação com a API (fetch/axios)
-  App.jsx         # componente principal
-  main.jsx        # ponto de entrada da aplicação
-  styles.css      # estilos globais
+  api/
+    client.js
+  App.jsx
+  main.jsx
+  styles.css
 
-index.html        # template HTML
-.env.example      # exemplo de variáveis de ambiente
-vite.config.js    # configuração do Vite
-package.json      # dependências e scripts
+test/
+  Dashboard.spec.jsx
+  Historico.spec.jsx
+  Login.spec.jsx
+  NovoPedido.spec.jsx
+  setup.js
+
+cypress/
+  e2e/
+  support/
+
+index.html
+vite.config.js
+cypress.config.js
+package.json
+.env.example
 ```
 
 ---
