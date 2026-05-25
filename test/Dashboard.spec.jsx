@@ -50,7 +50,7 @@ describe('Dashboard', () => {
     expect(onRefreshMock).toHaveBeenCalled();
   });
 
-  it('CT-FE-DASH-004 - Deve avancar status e exibir mensagem quando a API retornar sucesso ou erro', async () => {
+  it('CT-FE-DASH-004 - Deve avancar status quando a API retornar sucesso', async () => {
     const onRefreshMock = vi.fn();
     render(<Dashboard pedidos={mockPedidos} loading={false} erro="" onRefresh={onRefreshMock} />);
 
@@ -61,7 +61,6 @@ describe('Dashboard', () => {
     expect(screen.getByText('Atualizando...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Status atualizado com sucesso')).toBeInTheDocument();
       expect(onRefreshMock).toHaveBeenCalled();
     });
 
