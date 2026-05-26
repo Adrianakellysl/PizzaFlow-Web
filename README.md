@@ -53,6 +53,7 @@ Fornecer uma interface intuitiva para:
 - **Lucide React
 - **Vitest & React Testing Library** (Testes automatizados)
 - **Cypress
+- **Vercel
 
 ---
 
@@ -210,6 +211,13 @@ package.json
 .env.example
 ```
 
+---
+
+## Aplicação Online
+
+Frontend publicado na Vercel:
+
+🔗 https://pizza-flow-web.vercel.app
 ---
 
 ## Evolução futura
