@@ -46,14 +46,20 @@ Fornecer uma interface intuitiva para:
   
 ## Tecnologias
 
-- **React + Vite**
-- **CSS customizado**
-- **Fetch API**
-- **JWT** (autenticação)
-- **Lucide React
-- **Vitest & React Testing Library** (Testes automatizados)
-- **Cypress
-- **Vercel
+### Frontend
+- React
+- Vite
+- CSS customizado
+- Fetch API
+- JWT (autenticação)
+
+### Testes
+- React Testing Library
+- Vitest
+- Cypress
+
+### Deploy
+- Vercel
 
 ---
 
