@@ -14,6 +14,14 @@ Fornecer uma interface intuitiva para:
 
 ---
 
+## Preview
+<p align="center">
+  <img 
+    src="https://raw.githubusercontent.com/Adrianakellysl/PizzaFlow-Web/main/docs/login.png" 
+    width="800"
+  />
+
+
 ## Tecnologias
 
 - **React + Vite**
