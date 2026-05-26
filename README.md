@@ -15,13 +15,35 @@ Fornecer uma interface intuitiva para:
 ---
 
 ## Preview
+- **Tela de login**
 <p align="center">
   <img 
     src="https://raw.githubusercontent.com/Adrianakellysl/PizzaFlow-Web/main/docs/login.png" 
     width="800"
   />
 
+- **Tela de pedidos**
+<p align="center">
+ <img 
+    src="https://raw.githubusercontent.com/Adrianakellysl/PizzaFlow-Web/main/docs/pedidos.png" 
+    width="800"
+  />
 
+- **Tela de Novo pedido**
+<p align="center">
+  <img 
+    src="https://raw.githubusercontent.com/Adrianakellysl/PizzaFlow-Web/main/docs/novoPedido.png" 
+    width="800"
+  />
+
+- **Tela de Histórico**
+<p align="center">
+  <img 
+    src="https://raw.githubusercontent.com/Adrianakellysl/PizzaFlow-Web/main/docs/historico.png" 
+    width="800"
+  />
+---
+  
 ## Tecnologias
 
 - **React + Vite**
